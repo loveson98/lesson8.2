@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Japanese Vocab Flashcards – Festival Lesson</title>
+<style>
+:root{--bg:#faf7f2;--card:#fff;--tx:#2a2420;--mu:#8a7f76;--ac:#b5472f;--bd:#e5ddd2;--ok:#2f7d4f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1917;--card:#292524;--tx:#f3ede6;--mu:#a39a90;--ac:#e8836b;--bd:#3d3733;--ok:#6cc08b}}
+:root[data-theme="dark"]{--bg:#1c1917;--card:#292524;--tx:#f3ede6;--mu:#a39a90;--ac:#e8836b;--bd:#3d3733;--ok:#6cc08b}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Noto Sans JP","Noto Sans Devanagari",sans-serif;display:flex;flex-direction:column;align-items:center;padding:12px;min-height:100dvh}
+.top,.bar,.card,.row,.stats{width:100%;max-width:480px}
+.top{display:flex;justify-content:space-between;color:var(--mu);font-size:14px}
+.stats{color:var(--mu);font-size:12.5px;margin-top:2px}
+.bar{height:6px;background:var(--bd);border-radius:3px;margin:8px 0 12px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ac);width:0;transition:width .3s}
+.card{position:relative;height:clamp(300px,50dvh,480px);background:var(--card);border:1px solid var(--bd);border-radius:18px;display:flex;overflow-y:auto;padding:22px 18px;cursor:pointer;user-select:none;-webkit-overflow-scrolling:touch}
+.in{margin:auto;width:100%;text-align:center}
+.jp{font-size:clamp(26px,8vw,34px);font-weight:600;line-height:1.4;word-break:break-all}
+.hint{color:var(--mu);font-size:13px;margin-top:14px}
+.en{font-size:clamp(18px,5.4vw,22px);font-weight:600;line-height:1.35}
+.ne{font-size:clamp(18px,5.4vw,22px);color:var(--ac);margin-top:8px;line-height:1.45}
+.ex{margin-top:16px;padding-top:14px;border-top:1px dashed var(--bd);text-align:left}
+.ex small{display:block;color:var(--mu);font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.exj{font-size:clamp(17px,5vw,20px);font-weight:600;line-height:1.5}
+.exe{font-size:14.5px;margin-top:5px;line-height:1.4}
+.exn{font-size:14.5px;color:var(--ac);margin-top:3px;line-height:1.5}
+.bd{position:absolute;top:10px;right:12px;font-size:12px;font-weight:600;padding:3px 9px;border-radius:99px;border:1px solid var(--bd);color:var(--mu);background:var(--card)}
+.bd.k{color:var(--ok);border-color:var(--ok)}
+.bd.l{color:var(--ac);border-color:var(--ac)}
+.row{display:flex;gap:8px;margin-top:10px}
+button{flex:1;min-height:48px;padding:10px 6px;border-radius:12px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font-size:15px;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent}
+button:active{transform:scale(.98)}
+button.p{background:var(--ac);color:#fff;border-color:var(--ac)}
+button.on{border-color:var(--ac);color:var(--ac);font-weight:600}
+.row.sm button{font-size:14px}
+</style></head><body>
+<div class="top"><span id="pos"></span><span id="kn"></span></div>
+<div class="stats" id="st"></div>
+<div class="bar"><i id="pb"></i></div>
+<div class="card" id="card"></div>
+<div class="row"><button id="no">Still learning</button><button id="yes" class="p">Got it</button></div>
+<div class="row"><button id="prev">← Prev</button><button id="sh">Shuffle</button><button id="next">Next →</button></div>
+<div class="row sm"><button id="rs">Review unknown</button><button id="rl">Review learned</button></div>
+<div class="row sm"><button id="am">All cards</button><button id="all">Reset progress</button></div>
+<script>
+const RAW=`イベントかいじょう|event venue|कार्यक्रम स्थल
+やたい|food stalls|खानेकुराका स्टल
+ステージ|stage|मञ्च
+パフォーマンス|performance|प्रदर्शन
+かんこうしょうかい|tourist information corner|पर्यटन जानकारी कुना
+～コーナー|～ corner|...कुना
+スピーチコンテスト|speech contest|भाषण प्रतियोगिता
+～コンテスト|～ contest|...प्रतियोगिता
+カラオケ|karaoke|क्यारिओके
+～たいかい|～ competition|...प्रतियोगिता
+あいきどう|aikido|आइकिदो (मार्शल आर्ट)
+～デモンストレーション|～ demonstration|...प्रदर्शन
+せかい|world|संसार
+あそび|game|खेल
+～たいけん|hands-on ～|...अनुभव
+ファッションショー|fashion show|फेसन शो
+～ショー|～ show|...शो
+スタンプラリー|stamp collecting|स्ट्याम्प सङ्कलन
+こくさいこうりゅう|international exchange|अन्तर्राष्ट्रिय आदानप्रदान
+にゅうじょうりょう|admission fee / entry fee|प्रवेश शुल्क
+こうりゅうプラザ|exchange plaza|आदानप्रदान प्लाजा
+しゅさい|organizer|आयोजक
+きょうりょく|cooperation|सहयोग
+みんぞくいしょう|traditional dress|परम्परागत पोशाक
+ほんぶ|main office|मुख्य कार्यालय
+ふれあい|hands-on experience|प्रत्यक्ष अनुभव/सम्पर्क
+フラダンス|hula dance|हुला नाच
+わだいこ|Japanese drums|जापानी ढोल
+ワールドマーケット|world market|विश्व बजार
+トルコ|Turkey|टर्की
+ペルー|Peru|पेरु
+ざっか|sundry goods|विविध सामान
+だんたいしょうかい|introduction to organizations|संस्थाहरूको परिचय
+みんげいひん|folk craft|लोक हस्तकला
+しゅげいひん|handicraft|हस्तकला सामान
+ガーナ|Ghana|घाना
+フェアトレード|fair trade|निष्पक्ष व्यापार
+がいこくじんしえんネットワーク|foreign resident support network|विदेशी बासिन्दा सहयोग सञ्जाल
+ピニャータ|pinata|पिनाटा
+くすだまわり|opening the confetti ball|रङ्गीन बल फुटाउने खेल
+ちゅうごくゴマ|diabolo|डायबोलो (चिनियाँ लट्टु)
+まわす|to spin|घुमाउनु
+てづくり|hand-made|हातले बनाएको
+やっている|holding|आयोजना भइरहेको
+まだ|still|अझै
+うけつけ|reception|स्वागत/दर्ता काउन्टर
+あっち|over there|ऊ त्यता
+つきあたり|at the end of|अन्त्यमा
+たぶん|probably|सायद
+むりですか？|Is there no way?|सम्भव छैन?
+さあ|Hmmm. (not sure)|हुम्म, थाहा छैन
+～ない|inside ～|...भित्र
+きょうりょく（する）|(to) cooperate|सहयोग गर्नु
+おこさま|small children (polite)|साना बालबालिका
+みなさまにおねがいいたします|We would like to request everyone.|सबैलाई अनुरोध गर्दछौं।
+おみえです|～ is / are present. (polite)|...उपस्थित हुनुहुन्छ।
+ごえんりょください|Please refrain ～.|कृपया ...नगर्नुहोस्।
+ごきょうりょくよろしくおねがいいたします|We ask for your kind cooperation.|कृपया सहयोग गर्नुहोला।
+でんげん|power|बिजुली/पावर
+きる|to turn off|बन्द गर्नु
+マナーモード|silent mode|साइलेन्ट मोड
+せっていする|to set|सेट गर्नु
+つうわ（する）|(to) talk on the phone|फोनमा कुरा गर्नु
+おいそがしいなか|despite being busy|व्यस्त हुँदाहुँदै पनि
+おいでくださって、ありがとうございます|Thank you for coming.|आउनुभएकोमा धन्यवाद।
+かまいません|～ doesn’t matter.|केही फरक पर्दैन।
+もちこみ|bring in|भित्र ल्याउने
+きんし|prohibited|निषेध
+ロビー|lobby|लबी
+ちゅうがくせい|junior high school student|माध्यमिक तहको विद्यार्थी
+プロ|professional|पेशेवर
+えんりょする|to be asked not to|नगर्न अनुरोध गरिनु
+でる|to participate in|भाग लिनु
+さんかひ|entry fee|सहभागिता शुल्क
+ゆうしょうする|to win first prize|प्रथम हुनु/जित्नु
+しょうひん|award|पुरस्कार
+でる（しょうひんがでる）|to be offered|(पुरस्कार) दिइनु
+がっき|musical instrument|बाजा
+きょく|song|गीत/धुन
+そうだんする|to consult|सल्लाह लिनु
+もうしこみしょ|application form|आवेदन फाराम
+ひつようじこう|necessary information|आवश्यक विवरण
+もうしこみ|application / registration|आवेदन/दर्ता
+せんちゃくじゅん|first-come first-served basis|पहिले आउने पहिले पाउने
+じゅんばんに|in order|क्रमैसँग
+いただく|to receive (polite)|पाउनु (आदरार्थी)
+スピーチ|speech|भाषण
+テーマ|topic|विषय
+どうが|video|भिडियो
+さつえい|photography / filming|फोटो/भिडियो खिच्ने
+いんしょく|eating and drinking|खानपान
+はんばい|selling|बिक्री
+けいたいでんわ|mobile phone|मोबाइल फोन
+ロールケーキ|roll cake|रोल केक
+しゅうりょうする|to end|समाप्त गर्नु
+こすう|quantity|संख्या
+かぎられている|limited|सीमित
+れつ|line|लाइन
+おもとめの|wishing to buy (polite)|किन्न चाहने
+おならびください|Please line up.|कृपया लाइनमा बस्नुहोस्।
+たいこ|drums|ढोल
+たたく|to beat|पिट्नु/बजाउनु
+らいねん|next year|अर्को वर्ष
+バンブーダンス|Tinikling (Filipino dance)|टिनिक्लिङ (फिलिपिन्सको नाच)
+バングラデシュ|Bangladesh|बंगलादेश
+サテー|satay (Indonesian food)|साते (इन्डोनेसियाली खाना)`;
+/* Example sentences (hiragana only): [sentence, English, Nepali]. Cards without an entry simply show no example. */
+const EX={
+"やたい":["あそこに やたいが あります。","There are food stalls over there.","ऊ त्यहाँ खानेकुराका स्टलहरू छन्।"],
+"せかい":["せかいは ひろいです。","The world is wide.","संसार ठूलो छ।"],
+"あそび":["こどもは あそびが すきです。","Children like games.","बालबालिकालाई खेल मन पर्छ।"],
+"しゅさい":["しゅさいは だれですか。","Who is the organizer?","आयोजक को हुन्?"],
+"きょうりょく":["みんなの きょうりょくに ありがとう ございます。","Thank you for everyone’s cooperation.","सबैको सहयोगको लागि धन्यवाद।"],
+"まわす":["こまを まわします。","I spin a top.","म लट्टु घुमाउँछु।"],
+"てづくり":["これは てづくりの おかしです。","This is a hand-made sweet.","यो हातले बनाएको मिठाई हो।"],
+"まだ":["まだ はじまって いません。","It has not started yet.","अझै सुरु भएको छैन।"],
+"うけつけ":["うけつけは あそこです。","The reception is over there.","स्वागत काउन्टर त्यहाँ छ।"],
+"たぶん":["あしたは たぶん あめです。","Tomorrow will probably be rainy.","भोलि सायद पानी पर्छ।"],
+"でんげん":["でんげんを きって ください。","Please turn off the power.","कृपया पावर बन्द गर्नुहोस्।"],
+"きる":["でんきを きります。","I turn off the light.","म बत्ती निभाउँछु।"],
+"きんし":["ここで しゃしんは きんしです。","Photos are prohibited here.","यहाँ फोटो खिच्न निषेध छ।"],
+"がっき":["わたしは がっきが すきです。","I like musical instruments.","मलाई बाजा मन पर्छ।"],
+"きょく":["この きょくは すてきです。","This song is lovely.","यो गीत राम्रो छ।"],
+"どうが":["どうがを みます。","I watch a video.","म भिडियो हेर्छु।"],
+"らいねん":["らいねん にほんへ いきます。","I will go to Japan next year.","म अर्को वर्ष जापान जान्छु।"],
+"たいこ":["たいこを たたきます。","I beat the drum.","म ढोल बजाउँछु।"],
+"たたく":["つくえを たたかないで ください。","Please do not hit the desk.","कृपया डेस्क नपिट्नुहोस्।"],
+"れつ":["れつに ならんで ください。","Please line up.","कृपया लाइनमा बस्नुहोस्।"],
+"かんこうしょうかい":["かんこうしょうかいは どこですか。","Where is the tourist information corner?","पर्यटन जानकारी कुना कहाँ छ?"],
+"～たいかい":["きのう たいかいに でました。","I took part in a competition yesterday.","हिजो म प्रतियोगितामा भाग लिएँ।"],
+"あいきどう":["わたしは あいきどうを ならって います。","I am learning aikido.","म आइकिदो सिकिरहेको छु।"],
+"～たいけん":["にほんで いろいろな たいけんを しました。","I had various experiences in Japan.","मैले जापानमा विभिन्न अनुभव गरेँ।"],
+"こくさいこうりゅう":["こくさいこうりゅうは たのしいです。","International exchange is fun.","अन्तर्राष्ट्रिय आदानप्रदान रमाइलो छ।"],
+"にゅうじょうりょう":["にゅうじょうりょうは ごひゃくえんです。","The admission fee is 500 yen.","प्रवेश शुल्क ५०० येन हो।"],
+"みんぞくいしょう":["きれいな みんぞくいしょうですね。","What beautiful traditional dress!","कति राम्रो परम्परागत पोशाक!"],
+"ほんぶ":["ほんぶは とうきょうに あります。","The main office is in Tokyo.","मुख्य कार्यालय टोकियोमा छ।"],
+"ふれあい":["どうぶつとの ふれあいが たのしいです。","Hands-on contact with animals is fun.","जनावरसँगको प्रत्यक्ष सम्पर्क रमाइलो छ।"],
+"わだいこ":["わだいこの おとは おおきいです。","The sound of Japanese drums is loud.","जापानी ढोलको आवाज ठूलो छ।"],
+"ざっか":["ざっかの みせへ いきます。","I go to a sundry goods shop.","म विविध सामानको पसलमा जान्छु।"],
+"だんたいしょうかい":["だんたいしょうかいを ききます。","I listen to the introduction of the organizations.","म संस्थाहरूको परिचय सुन्छु।"],
+"みんげいひん":["みんげいひんを かいました。","I bought folk crafts.","मैले लोक हस्तकला किनेँ।"],
+"しゅげいひん":["しゅげいひんは すてきです。","The handicrafts are lovely.","हस्तकला सामान राम्रो छ।"],
+"くすだまわり":["くすだまわりは おもしろいです。","Opening the confetti ball is fun.","रङ्गीन बल फुटाउने खेल रमाइलो छ।"],
+"やっている":["いま おまつりを やって います。","A festival is being held now.","अहिले मेला आयोजना भइरहेको छ।"],
+"あっち":["おてあらいは あっちです。","The restroom is over there.","शौचालय ऊ त्यता छ।"],
+"つきあたり":["みちの つきあたりに おてあらいが あります。","There is a restroom at the end of the road.","बाटोको अन्त्यमा शौचालय छ।"],
+"むりですか？":["あしたまでは むりですか。","Is there no way to do it by tomorrow?","भोलिसम्म सम्भव छैन?"],
+"さあ":["さあ、わかりません。","Hmmm, I do not know.","हुम्म, मलाई थाहा छैन।"],
+"～ない":["かいじょうないは しずかです。","Inside the venue is quiet.","परिसरभित्र शान्त छ।"],
+"きょうりょく（する）":["みんなで きょうりょくします。","We cooperate together.","हामी सबै मिलेर सहयोग गर्छौं।"],
+"おこさま":["おこさまは こちらへ どうぞ。","Small children, please come this way.","साना बालबालिका यता आउनुहोस्।"],
+"みなさまにおねがいいたします":["みなさまに おねがいいたします。ここでは しずかに して ください。","We would like to request everyone. Please be quiet here.","सबैलाई अनुरोध गर्दछौं। कृपया यहाँ शान्त रहनुहोस्।"],
+"おみえです":["おきゃくさまが おみえです。","A guest is here.","पाहुना उपस्थित हुनुहुन्छ।"],
+"ごえんりょください":["ここでの おしゃべりは ごえんりょください。","Please refrain from chatting here.","कृपया यहाँ कुराकानी नगर्नुहोस्।"],
+"ごきょうりょくよろしくおねがいいたします":["みなさま、ごきょうりょく よろしく おねがいいたします。","Everyone, we ask for your kind cooperation.","सबैजना, कृपया सहयोग गर्नुहोला।"],
+"せっていする":["じかんを せっていします。","I set the time.","म समय सेट गर्छु।"],
+"つうわ（する）":["でんしゃの なかで つうわしないで ください。","Please do not talk on the phone on the train.","कृपया रेलभित्र फोनमा कुरा नगर्नुहोस्।"],
+"おいそがしいなか":["おいそがしいなか、ありがとうございます。","Thank you, despite being busy.","व्यस्त हुँदाहुँदै पनि धन्यवाद।"],
+"おいでくださって、ありがとうございます":["きょうは おいでくださって、ありがとうございます。","Thank you for coming today.","आज आउनुभएकोमा धन्यवाद।"],
+"かまいません":["あした でも かまいません。","Tomorrow is fine too.","भोलि भए पनि केही फरक पर्दैन।"],
+"もちこみ":["もちこみは きんしです。","Bringing things in is prohibited.","भित्र ल्याउन निषेध छ।"],
+"ちゅうがくせい":["おとうとは ちゅうがくせいです。","My younger brother is a junior high school student.","मेरो भाइ माध्यमिक तहको विद्यार्थी हो।"],
+"えんりょする":["ここでは しゃしんを えんりょして ください。","Please refrain from taking photos here.","कृपया यहाँ फोटो नखिच्नुहोस्।"],
+"でる":["わたしは たいかいに でます。","I take part in the competition.","म प्रतियोगितामा भाग लिन्छु।"],
+"さんかひ":["さんかひは ごひゃくえんです。","The entry fee is 500 yen.","सहभागिता शुल्क ५०० येन हो।"],
+"ゆうしょうする":["ともだちが ゆうしょうしました。","My friend won first prize.","मेरो साथीले प्रथम स्थान जित्यो।"],
+"しょうひん":["しょうひんは なんですか。","What is the prize?","पुरस्कार के हो?"],
+"でる（しょうひんがでる）":["ゆうしょうすると しょうひんが でます。","If you win, a prize is given.","जित्नुभयो भने पुरस्कार दिइन्छ।"],
+"そうだんする":["せんせいに そうだんします。","I consult my teacher.","म शिक्षकसँग सल्लाह लिन्छु।"],
+"もうしこみしょ":["もうしこみしょに なまえを かいて ください。","Please write your name on the application form.","कृपया आवेदन फारममा नाम लेख्नुहोस्।"],
+"ひつようじこう":["ひつようじこうを かいて ください。","Please write the necessary information.","कृपया आवश्यक विवरण लेख्नुहोस्।"],
+"もうしこみ":["もうしこみは あしたまでです。","The application is until tomorrow.","आवेदन भोलिसम्म हो।"],
+"せんちゃくじゅん":["せんちゃくじゅんで ごじゅうにんです。","It is first-come first-served, for 50 people.","पहिले आउने पहिले पाउने आधारमा ५० जना।"],
+"じゅんばんに":["じゅんばんに はなして ください。","Please speak in order.","कृपया क्रमैसँग बोल्नुहोस्।"],
+"いただく":["おかしを いただきます。","I receive some sweets. (polite)","म मिठाई पाउँछु। (आदरार्थी)"],
+"いんしょく":["ここは いんしょくきんしです。","Eating and drinking are prohibited here.","यहाँ खानपान निषेध छ।"],
+"さつえい":["さつえいは きんしです。","Photography is prohibited.","फोटो/भिडियो खिच्न निषेध छ।"],
+"はんばい":["おかしを はんばいして います。","Sweets are being sold.","मिठाई बिक्री भइरहेको छ।"],
+"けいたいでんわ":["けいたいでんわを きって ください。","Please turn off your mobile phone.","कृपया मोबाइल फोन बन्द गर्नुहोस्।"],
+"しゅうりょうする":["おまつりは ごじに しゅうりょうします。","The festival ends at 5 o’clock.","मेला ५ बजे समाप्त हुन्छ।"],
+"こすう":["こすうは じゅっこです。","The quantity is ten pieces.","संख्या दश वटा हो।"],
+"かぎられている":["こすうが かぎられて います。","The quantity is limited.","संख्या सीमित छ।"],
+"おもとめの":["おもとめの かたは こちらへ どうぞ。","Those wishing to buy, please come this way.","किन्न चाहने व्यक्ति यता आउनुहोस्।"],
+"おならびください":["ここに おならびください。","Please line up here.","कृपया यहाँ लाइनमा बस्नुहोस्।"]
+};
+const ALL=RAW.split("\n").map((l,n)=>{const p=l.split("|");return{id:n,jp:p[0],en:p[1],ne:p[2]}});
+const KEY="jpvocab_status_v1";
+let st={};
+try{st=JSON.parse(localStorage.getItem(KEY)||"{}")||{}}catch(e){st={}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}}
+const isK=c=>st[c.id]==="known";
+let mode="all",deck=ALL.slice(),i=0,flip=false,armed=false;
+const $=id=>document.getElementById(id);
+function deckFor(m){return m==="learned"?ALL.filter(isK):m==="unknown"?ALL.filter(c=>!isK(c)):ALL.slice()}
+function setMode(m){mode=m;deck=deckFor(m);i=0;flip=false;render()}
+function render(){
+ const nk=ALL.filter(isK).length,nl=ALL.filter(c=>st[c.id]==="learning").length;
+ $("kn").textContent="Got it: "+nk+" / "+ALL.length;
+ $("st").textContent="Still learning: "+nl+" · Not studied yet: "+(ALL.length-nk-nl);
+ $("pb").style.width=(nk/ALL.length*100)+"%";
+ $("rs").classList.toggle("on",mode==="unknown");
+ $("rl").classList.toggle("on",mode==="learned");
+ $("am").classList.toggle("on",mode==="all");
+ const c=deck[i];
+ if(!c){
+  const msg=mode==="learned"?"No cards marked “Got it” yet.":mode==="unknown"?"All cards learned 🎉":"No cards.";
+  $("card").innerHTML='<div class="in"><div class="en">'+msg+'</div><div class="hint">Use “All cards” to go back.</div></div>';
+  $("pos").textContent="0 / 0";return}
+ const s=st[c.id],b=s==="known"?'<span class="bd k">✓ Got it</span>':s==="learning"?'<span class="bd l">Still learning</span>':'';
+ let h;
+ if(flip){
+  const e=EX[c.jp];
+  h='<div class="in"><div class="en">'+c.en+'</div><div class="ne">'+c.ne+'</div>'+
+   (e?'<div class="ex"><small>Example</small><div class="exj">'+e[0]+'</div><div class="exe">'+e[1]+'</div><div class="exn">'+e[2]+'</div></div>':'')+'</div>';
+ }else h='<div class="in"><div class="jp">'+c.jp+'</div><div class="hint">Tap to flip</div></div>';
+ $("card").innerHTML=b+h;
+ $("card").scrollTop=0;
+ $("pos").textContent=(i+1)+" / "+deck.length;
+}
+function go(d){if(!deck.length)return;i=(i+d+deck.length)%deck.length;flip=false;render()}
+function mark(s){const c=deck[i];if(!c)return;st[c.id]=s;save();go(1)}
+$("card").onclick=()=>{if(!deck.length)return;flip=!flip;render()};
+$("next").onclick=()=>go(1);$("prev").onclick=()=>go(-1);
+$("yes").onclick=()=>mark("known");
+$("no").onclick=()=>mark("learning");
+$("sh").onclick=()=>{for(let k=deck.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[deck[k],deck[j]]=[deck[j],deck[k]]}i=0;flip=false;render()};
+$("rs").onclick=()=>setMode("unknown");
+$("rl").onclick=()=>setMode("learned");
+$("am").onclick=()=>setMode("all");
+$("all").onclick=()=>{
+ const b=$("all");
+ if(!armed){armed=true;b.textContent="Tap again to confirm";setTimeout(()=>{armed=false;b.textContent="Reset progress"},3000);return}
+ armed=false;b.textContent="Reset progress";st={};save();setMode("all");
+};
+render();
+</script></body></html>
